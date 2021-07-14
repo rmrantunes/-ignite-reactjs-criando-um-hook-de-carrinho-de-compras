@@ -21,7 +21,7 @@ interface CartContextData {
 
 const CartContext = createContext<CartContextData>({} as CartContextData);
 
-const LOCAL_STORAGE_CART_KEY = "@RocketShoes:cart"
+const LOCAL_STORAGE_CART_KEY = "@RocketShoes:cart";
 
 export function CartProvider({ children }: CartProviderProps): JSX.Element {
   const [cart, setCart] = useState<Product[]>(() => {
@@ -34,11 +34,62 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
     return [];
   });
 
+  const increaseExistingProductAmountInCart = (productId: number) => {
+    setCart((cart) => {
+      const newCartState = cart.map((product) =>
+        product.id === productId
+          ? {
+              ...product,
+              amount: product.amount + 1,
+            }
+          : product
+      );
+
+      window.localStorage.setItem(
+        LOCAL_STORAGE_CART_KEY,
+        JSON.stringify(newCartState)
+      );
+
+      return newCartState;
+    });
+  };
+
   const addProduct = async (productId: number) => {
     try {
-      // TODO
+      const { data: productStock } = await api.get<Stock>(
+        `/stock/${productId}`
+      );
+      const { data: productToAdd } = await api.get(`/products/${productId}`);
+
+      const existingProductInCart = cart.find(
+        (product) => product.id === productId
+      );
+
+      if (existingProductInCart) {
+        const isProductAvaliableInStock =
+          existingProductInCart.amount < productStock.amount;
+
+        if (!isProductAvaliableInStock) {
+          toast.error("Quantidade solicitada fora de estoque");
+          return;
+        }
+        
+        increaseExistingProductAmountInCart(productId);
+        return;
+      }
+
+      setCart((cart) => {
+        const newCartState = [...cart, { ...productToAdd, amount: 1 }];
+
+        window.localStorage.setItem(
+          LOCAL_STORAGE_CART_KEY,
+          JSON.stringify(newCartState)
+        );
+
+        return newCartState;
+      });
     } catch {
-      // TODO
+      toast.error("Erro na adição do produto");
     }
   };
 
