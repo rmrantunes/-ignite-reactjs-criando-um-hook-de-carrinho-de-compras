@@ -2,6 +2,7 @@ import { createContext, ReactNode, useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "../services/api";
 import { Product, Stock } from "../types";
+import { saveToLocalStorage } from "../util/local-storage";
 
 interface CartProviderProps {
   children: ReactNode;
@@ -22,6 +23,8 @@ interface CartContextData {
 const CartContext = createContext<CartContextData>({} as CartContextData);
 
 const LOCAL_STORAGE_CART_KEY = "@RocketShoes:cart";
+
+const saveCartToLocalStorage = saveToLocalStorage.bind(null, LOCAL_STORAGE_CART_KEY)
 
 export function CartProvider({ children }: CartProviderProps): JSX.Element {
   const [cart, setCart] = useState<Product[]>(() => {
@@ -48,10 +51,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
           : product
       );
 
-      window.localStorage.setItem(
-        LOCAL_STORAGE_CART_KEY,
-        JSON.stringify(newCartState)
-      );
+      saveCartToLocalStorage(newCartState)
 
       return newCartState;
     });
@@ -82,10 +82,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
       setCart((cart) => {
         const newCartState = [...cart, { ...productToAdd, amount: 1 }];
 
-        window.localStorage.setItem(
-          LOCAL_STORAGE_CART_KEY,
-          JSON.stringify(newCartState)
-        );
+        saveCartToLocalStorage(newCartState)
 
         return newCartState;
       });
@@ -105,10 +102,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
       setCart((cart) => {
         const newCartState = cart.filter((product) => product.id !== productId);
 
-        window.localStorage.setItem(
-          LOCAL_STORAGE_CART_KEY,
-          JSON.stringify(newCartState)
-        );
+        saveCartToLocalStorage(newCartState)
 
         return newCartState;
       });
@@ -142,10 +136,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
           product.id === productId ? { ...product, amount } : product
         );
 
-        window.localStorage.setItem(
-          LOCAL_STORAGE_CART_KEY,
-          JSON.stringify(newCartState)
-        );
+        saveCartToLocalStorage(newCartState)
 
         return newCartState;
       });
