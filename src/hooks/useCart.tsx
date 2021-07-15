@@ -8,7 +8,7 @@ interface CartProviderProps {
   children: ReactNode;
 }
 
-interface UpdateProductAmount {
+interface UpdateProductAmountInput {
   productId: number;
   amount: number;
 }
@@ -17,7 +17,7 @@ interface CartContextData {
   cart: Product[];
   addProduct: (productId: number) => Promise<void>;
   removeProduct: (productId: number) => void;
-  updateProductAmount: ({ productId, amount }: UpdateProductAmount) => void;
+  updateProductAmount: ({ productId, amount }: UpdateProductAmountInput) => void;
 }
 
 const CartContext = createContext<CartContextData>({} as CartContextData);
@@ -108,7 +108,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
   const updateProductAmount = async ({
     productId,
     amount,
-  }: UpdateProductAmount) => {
+  }: UpdateProductAmountInput) => {
     try {
       const { data: productStock } = await api.get<Stock>(
         `/stock/${productId}`
