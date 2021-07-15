@@ -124,9 +124,37 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
     amount,
   }: UpdateProductAmount) => {
     try {
-      // TODO
+      const { data: productStock } = await api.get<Stock>(
+        `/stock/${productId}`
+      );
+
+      const existingProductInCart = cart.find(
+        (product) => product.id === productId
+      );
+
+      const isProductAvaliableInStock =
+        existingProductInCart &&
+        existingProductInCart.amount < productStock.amount;
+
+      if (!isProductAvaliableInStock) {
+        toast.error("Quantidade solicitada fora de estoque");
+        return;
+      }
+
+      setCart((cart) => {
+        const newCartState = cart.map((product) =>
+          product.id === productId ? { ...product, amount } : product
+        );
+
+        window.localStorage.setItem(
+          LOCAL_STORAGE_CART_KEY,
+          JSON.stringify(newCartState)
+        );
+
+        return newCartState;
+      });
     } catch {
-      // TODO
+      toast.error("Erro na alteração de quantidade do produto");
     }
   };
 
