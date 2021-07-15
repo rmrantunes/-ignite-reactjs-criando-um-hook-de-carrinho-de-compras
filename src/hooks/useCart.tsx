@@ -50,9 +50,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
             }
           : product
       );
-
       saveCartToLocalStorage(newCartState)
-
       return newCartState;
     });
   };
@@ -81,9 +79,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
       setCart((cart) => {
         const newCartState = [...cart, { ...productToAdd, amount: 1 }];
-
         saveCartToLocalStorage(newCartState)
-
         return newCartState;
       });
     } catch {
@@ -101,9 +97,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
       setCart((cart) => {
         const newCartState = cart.filter((product) => product.id !== productId);
-
         saveCartToLocalStorage(newCartState)
-
         return newCartState;
       });
     } catch {
@@ -135,9 +129,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
         const newCartState = cart.map((product) =>
           product.id === productId ? { ...product, amount } : product
         );
-
         saveCartToLocalStorage(newCartState)
-
         return newCartState;
       });
     } catch {
@@ -156,6 +148,5 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
 export function useCart(): CartContextData {
   const context = useContext(CartContext);
-
   return context;
 }
