@@ -65,10 +65,10 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
       const existingProductInCart = getExistingProductInCart(productId);
 
       if (existingProductInCart) {
-        const isProductAvaliableInStock =
+        const isProductAvailableInStock =
           existingProductInCart.amount < productStock.amount;
 
-        if (!isProductAvaliableInStock) {
+        if (!isProductAvailableInStock) {
           toast.error("Quantidade solicitada fora de estoque");
           return;
         }
@@ -116,11 +116,11 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
       const existingProductInCart = getExistingProductInCart(productId);
 
-      const isProductAvaliableInStock =
+      const isProductAvailableInStock =
         existingProductInCart &&
         existingProductInCart.amount < productStock.amount;
 
-      if (!isProductAvaliableInStock) {
+      if (!isProductAvailableInStock) {
         toast.error("Quantidade solicitada fora de estoque");
         return;
       }
