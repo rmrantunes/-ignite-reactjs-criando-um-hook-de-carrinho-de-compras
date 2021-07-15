@@ -73,7 +73,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
           toast.error("Quantidade solicitada fora de estoque");
           return;
         }
-        
+
         increaseExistingProductAmountInCart(productId);
         return;
       }
@@ -95,9 +95,27 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
   const removeProduct = (productId: number) => {
     try {
-      // TODO
+      const existingProductInCart = cart.find(
+        (product) => product.id === productId
+      );
+
+      if (!existingProductInCart) {
+        toast.error("Erro na remoção do produto");
+        return;
+      }
+
+      setCart((cart) => {
+        const newCartState = cart.filter((product) => product.id !== productId);
+
+        window.localStorage.setItem(
+          LOCAL_STORAGE_CART_KEY,
+          JSON.stringify(newCartState)
+        );
+
+        return newCartState;
+      });
     } catch {
-      // TODO
+      toast.error("Erro na remoção do produto");
     }
   };
 
