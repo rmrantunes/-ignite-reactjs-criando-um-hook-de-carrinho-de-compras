@@ -34,6 +34,9 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
     return [];
   });
 
+  const getExistingProductInCart = (productId: number) =>
+    cart.find((product) => product.id === productId);
+
   const increaseExistingProductAmountInCart = (productId: number) => {
     setCart((cart) => {
       const newCartState = cart.map((product) =>
@@ -61,9 +64,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
       );
       const { data: productToAdd } = await api.get(`/products/${productId}`);
 
-      const existingProductInCart = cart.find(
-        (product) => product.id === productId
-      );
+      const existingProductInCart = getExistingProductInCart(productId);
 
       if (existingProductInCart) {
         const isProductAvaliableInStock =
@@ -95,10 +96,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
   const removeProduct = (productId: number) => {
     try {
-      const existingProductInCart = cart.find(
-        (product) => product.id === productId
-      );
-
+      const existingProductInCart = getExistingProductInCart(productId);
       if (!existingProductInCart) {
         toast.error("Erro na remoção do produto");
         return;
@@ -128,9 +126,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
         `/stock/${productId}`
       );
 
-      const existingProductInCart = cart.find(
-        (product) => product.id === productId
-      );
+      const existingProductInCart = getExistingProductInCart(productId);
 
       const isProductAvaliableInStock =
         existingProductInCart &&
